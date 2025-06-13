@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Lista de Tokens - Tokens App{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Lista de Tokens</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for token in tokens %}
+                    <tr>
+                        <td>{{ token.id }}</td>
+                        <td>{{ token.name }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
