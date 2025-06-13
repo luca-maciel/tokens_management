@@ -12,7 +12,6 @@ class Token(models.Model):
     data_solicitacao = models.DateField()
     data_entrega = models.DateField()
     data_modificacao = models.DateField(auto_now=True)
-    data_exclusao = models.DateField(null=True, blank=True)
     observacao = models.TextField(null=True, blank=True)
     def __str__(self):
         return f"{self.nome_responsavel}"
