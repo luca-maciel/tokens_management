@@ -10,7 +10,7 @@ class Token(models.Model):
     telefone_responsavel = models.CharField(max_length=15)
     serial = models.CharField(max_length=14)
     data_solicitacao = models.DateField()
-    data_entrega = models.DateField()
+    data_entrega = models.DateField(auto_now_add=False)
     data_modificacao = models.DateField(auto_now=True)
     observacao = models.TextField(null=True, blank=True)
     def __str__(self):
