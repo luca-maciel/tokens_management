@@ -1,25 +1,73 @@
 {% extends "base.html" %}
-
 {% block title %}Lista de Tokens - Tokens App{% endblock %}
 
 {% block content %}
+
     <div class="container">
         <h1>Lista de Tokens</h1>
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>Serial</th>
                     <th>Nome</th>
+                    <th>Cpf</th>
+                    <th>Função</th>
+                    <th>Setor</th>
+                    <th>Telefone</th>
+                    <th>Data de solicitação</th>
+                    <th>Data de entrega</th>
+                    {% if token.observacao != "" %}
+                    <th>Observação</th>
+                    {% endif %}
+
                 </tr>
             </thead>
             <tbody>
                 {% for token in tokens %}
+                <div id="meuModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <p>{{token.observacao}}</p>
+                </div>
+                </div>
                     <tr>
-                        <td>{{ token.id }}</td>
-                        <td>{{ token.name }}</td>
+                        <td>{{ token.serial }}</td>
+                        <td>{{ token }}</td>
+                        <td>{{ token.cpf_responsavel }}</td>
+                        <td>{{ token.funcao_responsavel }}</td>
+                        <td>{{ token.setor_responsavel }}</td>
+                        <td>{{ token.telefone_responsavel }}</td>
+                        <td>{{ token.data_solicitacao }}</td>
+                        <td>{{ token.data_entrega }}</td>
+                        {% if token.observacao != "" %}
+                        <td><button id="abrirModal">Ver Observação</button></td>
+                        {% else %}
+                        <td><b>Nenhuma observação</b></td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+
+    <script>
+        document.body.style.marginTop = "50px";
+        const modal = document.getElementById("meuModal");
+        const btn = document.getElementById("abrirModal");
+        const fechar = document.querySelector(".close");
+
+        btn.onclick = () => {
+            modal.classList.add("ativo");
+        }
+
+        fechar.onclick = () => {
+            modal.classList.remove("ativo");
+        }
+
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.classList.remove("ativo");
+            }
+        }
+    </script>
 {% endblock %}
