@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}{{token}}{% endblock %}
+
+{% block content %}
+    <form action="{% url 'atualizar_token' token.id %}" method="POST"> {% csrf_token %}
+        <input type="text" name="nome_responsavel" value="{{ token.nome_responsavel }}">
+        <input type="text" name="cpf_responsavel" value="{{ token.cpf_responsavel }}" placeholder="CPF do responsável" id="cpf" maxlength="14">
+        <select name="funcao_responsavel">
+            {% for funcao in funcoes %}
+            <option value="{{ funcao }}">
+                {{ funcao }}
+            </option>
+            {% endfor %}          
+        </select>
+        <select name="setor_responsavel">
+            {% for setor in setores %}
+            <option value="{{ setor }}">
+                {{ setor }}
+            </option>
+            {% endfor %}
+        </select>
+        <input type="text" name="telefone_responsavel" value="{{ token.telefone_responsavel }}" placeholder="Telefone do responsável">
+        <input type="number" name="serial" value="{{ token.serial }}" placeholder="Serial do token">
+        <input type="date" name="data_solicitacao" value="{{ token.data_solicitacao }}" placeholder="Data de solicitação">
+        <input type="date" name="data_entrega" value="{{ token.data_entrega }}" placeholder="Data de entrega">
+        <textarea name="observacao" placeholder="Observação">{{ token.observacao }}</textarea>
+        <button type="submit">Atualizar Token</button>
+        <a href="{% url 'lista_tokens' %}">Voltar para a lista de tokens</a>
+    </form>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        document.body.style.marginTop = "50px";
+        var cpf = document.getElementById("cpf");
+        $(document).ready(function(){
+    $('#cpf').mask('000.000.000-00');
+});
+    </script>
+{% endblock %}

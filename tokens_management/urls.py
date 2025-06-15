@@ -6,4 +6,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("", views.home, name="home"),
     path("lista_tokens/", views.lista_tokens, name="lista_tokens"),
+    path("novos_tokens/", views.atualizar_lista, name="atualizar_lista"),
+    path("atualizar_token/<int:token_id>/", views.atualizar_token, name="atualizar_token"),
 ]
