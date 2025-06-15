@@ -3,63 +3,95 @@
 
 {% block content %}
 
-    <div class="container">
-        <h1>Lista de Tokens</h1>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Serial</th>
-                    <th>Nome</th>
-                    <th>Cpf</th>
-                    <th>Função</th>
-                    <th>Setor</th>
-                    <th>Telefone</th>
-                    <th>Data de solicitação</th>
-                    <th>Data de entrega</th>
-                    {% if token.observacao != "" %}
-                    <th>Observação</th>
-                    {% endif %}
+{% if sucesso %}
+<div class="alert alert-success" role="alert">
+    {{sucesso}}
+</div>
+{% endif %}
 
-                </tr>
-            </thead>
-            <tbody>
-                {% for token in tokens %}
-                <div id="meuModal" class="modal-custom">
-                    <div class="modal-content-custom">
-                        <span class="close-modal">&times;</span>
-                        <h5>Observação</h5>
-                        <p>{{token.observacao}}</p>
+<div class="container">
+    <div class="head">
+        <div class="head_left">
+            <h1>Lista de Tokens</h1>
+            <a href="{% url 'home' %}" class="btn btn-secondary">Voltar</a>
+            <a href="{% url 'novo_token' %}" class="btn btn-primary">Cadastrar Token</a>
+            <a href="{% url 'lista_tokens' %}" name="recarregar_lista" class="btn btn-info">Atualizar lista</a>
+        </div>
+        <br>
+        <input type="text" id='searchInput' placeholder='Pesquisar por nome, CPF ou setor...' class="form-control">
+        <br>
+        <div style="max-height: 70vh; overflow-y: auto; border: 1px solid #dee2e6;">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Serial</th>
+                        <th>Nome</th>
+                        <th>Cpf</th>
+                        <th>Função</th>
+                        <th>Setor</th>
+                        <th>Telefone</th>
+                        <th>Data de solicitação</th>
+                        <th>Data de entrega</th>
+                        <th>Observação</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for token in tokens %}
+                    <div id="meuModal" class="modal-custom">
+                        <div id="modal-{{ token.id }}" class="modal-content-custom">
+                            <span class="close-modal" data-modal-id="modal-{{ token.id }}">&times;</span>
+                            <h5>Observação</h5>
+                            <p>{{token.observacao}}</p>
+                        </div>
                     </div>
-                </div>
                     <tr>
                         <td>{{ token.serial }}</td>
-                        <td><a href="{% url 'atualizar_token' token.id %}">{{ token }}</a></td>
-                        <td>{{ token.cpf_responsavel }}</td>
+                        <td><a href="{% url 'atualizar_token' token.id %}" style="text-decoration: none;">{{ token }}</a></td>
+                        <td id="cpf">{{ token.cpf_responsavel }}</td>
                         <td>{{ token.funcao_responsavel }}</td>
                         <td>{{ token.setor_responsavel }}</td>
-                        <td>{{ token.telefone_responsavel }}</td>
+                        <td id="telefone">{{ token.telefone_responsavel }}</td>
                         <td>{{ token.data_solicitacao }}</td>
                         <td>{{ token.data_entrega }}</td>
                         {% if token.observacao != "" %}
-                        <td><button id="abrirModal">Ver Observação</button></td>
+                        {% if token.observacao|length > 30 %}
+                        <td>Entre na edição para ver a observação.</td>
+                        {% else %}
+                        <td>{{token.observacao}}</td>
+                        {% endif %}
+
                         {% else %}
                         <td><b>Nenhuma observação</b></td>
                         {% endif %}
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
 
+        </div>
+    </div>
+    {% if not sucesso %}
+    <span id="naoSucesso"></span>
+    {% endif %}
     <script>
-        document.body.style.marginTop = "50px";
+
+        if (document.getElementById("naoSucesso")) {
+            document.body.style.marginTop = "50px";
+        }
         const modal = document.getElementById("meuModal");
-        const btn = document.getElementById("abrirModal");
+        var btns = document.getElementsByClassName("abrirModal");
         const fechar = document.querySelector(".close-modal");
 
-        btn.onclick = () => {
-            modal.classList.add("ativo");
+        for (btn of btns) {
+            btn.onclick = () => {
+                modal.classList.add("ativo");
+            }
         }
+        // btn.onclick = () => {
+        //     modal.classList.add("ativo");
+        // }
 
         fechar.onclick = () => {
             modal.classList.remove("ativo");
@@ -70,5 +102,40 @@
                 modal.classList.remove("ativo");
             }
         }
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function () {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                let found = false;
+
+                cells.forEach(cell => {
+                    if (cell.textContent.toLowerCase().includes(filter)) {
+                        found = true;
+                    }
+                });
+
+                if (found) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
     </script>
-{% endblock %}
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        var cpf = document.getElementById("cpf");
+        $(document).ready(function () {
+            $('#cpf').mask('000.000.000-00');
+        });
+        $(document).ready(function () {
+            $('#telefone').mask('(00) 00000-0000');
+        });
+    </script>
+    {% endblock %}

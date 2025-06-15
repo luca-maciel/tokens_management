@@ -3,9 +3,12 @@
 {% block title %}Home - Tokens App{% endblock %}
 
 {% block content %}
-    <div class="container">
+    <div class="container" style="width: 100%; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h1>Página inicial</h1>
-        <button class="btn btn-primary" onclick="Tokens()">Clique aqui para ver a lista de tokens</button>
+        <div class="links">
+            <button class="btn btn-primary" onclick="Tokens()">Clique aqui para ver a lista de tokens</button>
+            <a href="{% url 'admin' %}" class="btn btn-warning">Área administrativa</a>
+        </div>
     </div>
 
     <script>
