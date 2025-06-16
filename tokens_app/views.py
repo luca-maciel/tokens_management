@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Token, funcoes, setores
+from .models import Token, funcoes
 import openpyxl as xl
 from .atualiza_lista import atualiza_lista_tokens
 
@@ -16,8 +16,8 @@ def novo_token(request):
         nome_responsavel = request.POST.get('nome_responsavel')
         cpf_responsavel = request.POST.get('cpf_responsavel')
         funcao_responsavel = request.POST.get('funcao_responsavel')
-        setor_responsavel = request.POST.get('setor_responsavel')
-        telefone_responsavel = request.POST.get('telefone_responsavel')
+        # setor_responsavel = request.POST.get('setor_responsavel')
+        # telefone_responsavel = request.POST.get('telefone_responsavel')
         serial = request.POST.get('serial')
         data_solicitacao = request.POST.get('data_solicitacao') or None
         data_entrega = request.POST.get('data_entrega') or None
@@ -27,8 +27,8 @@ def novo_token(request):
             nome_responsavel=nome_responsavel,
             cpf_responsavel=cpf_responsavel,
             funcao_responsavel=funcao_responsavel,
-            setor_responsavel=setor_responsavel,
-            telefone_responsavel=telefone_responsavel,
+            # setor_responsavel=setor_responsavel,
+            # telefone_responsavel=telefone_responsavel,
             serial=serial,
             data_solicitacao=data_solicitacao,
             data_entrega=data_entrega,
@@ -41,7 +41,7 @@ def novo_token(request):
             token.save()
         return render(request, 'lista_tokens.html', {'tokens': Token.objects.all(), "sucesso": "Token cadastrado com sucesso!"})
 
-    return render(request, 'novo_token.html', {"funcoes": funcoes, "setores": setores})
+    return render(request, 'novo_token.html', {"funcoes": funcoes})
 
 def atualizar_token(request, token_id):
     # return HttpResponse("This view is not implemented yet.")
@@ -50,8 +50,8 @@ def atualizar_token(request, token_id):
         token.nome_responsavel = request.POST.get('nome_responsavel')
         token.cpf_responsavel = request.POST.get('cpf_responsavel')
         token.funcao_responsavel = request.POST.get('funcao_responsavel')
-        token.setor_responsavel = request.POST.get('setor_responsavel')
-        token.telefone_responsavel = request.POST.get('telefone_responsavel')
+        # token.setor_responsavel = request.POST.get('setor_responsavel')
+        # token.telefone_responsavel = request.POST.get('telefone_responsavel')
         token.serial = request.POST.get('serial')
         if request.POST.get('data_solicitacao'):
             token.data_solicitacao = request.POST.get('data_solicitacao')
@@ -64,7 +64,7 @@ def atualizar_token(request, token_id):
         token.observacao = request.POST.get('observacao')
         token.save()
         return render(request, 'lista_tokens.html', {'tokens': Token.objects.all(), "sucesso": "Token atualizado com sucesso!"})
-    return render(request, 'token.html', {'token': token, "funcoes": funcoes, "setores": setores})
+    return render(request, 'token.html', {'token': token, "funcoes": funcoes})
 
 def atualizar_lista(request):
     """
@@ -81,8 +81,8 @@ def atualizar_lista(request):
                 nome_responsavel=token['nome_responsavel'],
                 cpf_responsavel=token['cpf_responsavel'],
                 funcao_responsavel=token['funcao_responsavel'],
-                setor_responsavel=token['setor_responsavel'],
-                telefone_responsavel=token['telefone_responsavel'],
+                # setor_responsavel=token['setor_responsavel'],
+                # telefone_responsavel=token['telefone_responsavel'],
                 serial=token['serial'],
                 data_solicitacao=token['data_solicitacao'],
                 data_entrega=token['data_entrega'],

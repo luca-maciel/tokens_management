@@ -34,7 +34,7 @@
         </select>
     </div>
 
-    <div class="mb-3">
+    <!-- <div class="mb-3">
         <label for="setor_responsavel" class="form-label">Setor</label>
         <select class="form-select" name="setor_responsavel" id="setor_responsavel">
             {% for setor in setores %}
@@ -46,7 +46,7 @@
     <div class="mb-3">
         <label for="telefone" class="form-label">Telefone do responsável</label>
         <input type="text" class="form-control" name="telefone_responsavel" id="telefone" value="{{ token.telefone_responsavel }}" placeholder="(00) 00000-0000" maxlength="15">
-    </div>
+    </div> -->
 
     <div class="mb-3">
         <label for="serial" class="form-label">Serial do token</label>
@@ -61,6 +61,9 @@
     <div class="mb-3">
         <label for="data_entrega" class="form-label">Data de entrega</label>
         <input type="date" class="form-control" name="data_entrega" id="data_entrega" value="{{ token.data_entrega }}">
+        <label for="entregue">Entregue? </label>
+            <input type="checkbox" name="entregue" id="entregue" class="form-check-input" onchange="console.log(this.checked)">
+        <label for=""></label>
     </div>
 
     <div class="mb-3">
@@ -82,6 +85,21 @@
     <span id="naoSucesso"></span>
 {% endif %}
 <script>
+     var entregue = document.getElementById("entregue");
+
+    var data_entrega = document.getElementById("data_entrega");
+
+    entregue.addEventListener("change", ()=>{
+        if (entregue === true || entregue.checked) {
+            data_entrega.removeAttribute("disabled");
+            data_entrega.setAttribute("required", "required");
+        } 
+        else {
+            data_entrega.setAttribute("disabled", "disabled");
+            data_entrega.removeAttribute("required");
+            data_entrega.value = "";
+        }
+    })
     
     if (document.getElementById("naoSucesso")) {
         document.body.style.marginTop = "50px";

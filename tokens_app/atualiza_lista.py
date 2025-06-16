@@ -15,19 +15,15 @@ def atualiza_lista_tokens():
                 nome_responsavel = linha[0]
                 cpf_responsavel = linha[1]
                 funcao_responsavel = linha[2]
-                setor_responsavel = linha[3]
-                telefone_responsavel = linha[4]
-                serial = linha[5]
-                data_solicitacao = linha[6]
-                data_entrega = linha[7]
-                observacao = linha[8]
+                serial = linha[3]
+                data_solicitacao = linha[4]
+                data_entrega = linha[5]
+                observacao = linha[6]
 
                 novos_tokens[f"{nome_responsavel}"] = {
                     'nome_responsavel': nome_responsavel,
                     'cpf_responsavel': cpf_responsavel,
                     'funcao_responsavel': funcao_responsavel,
-                    'setor_responsavel': setor_responsavel,
-                    'telefone_responsavel': telefone_responsavel,
                     'serial': serial,
                     'data_solicitacao': data_solicitacao,
                     'data_entrega': data_entrega,
