@@ -8,6 +8,7 @@ def home(request):
     return render(request, 'home.html')
 
 def lista_tokens(request):
+    # print(request.user)
     tokens = Token.objects.all()
     return render(request, 'lista_tokens.html', {'tokens': tokens})
 

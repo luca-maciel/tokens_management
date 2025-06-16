@@ -2,6 +2,8 @@ from django.db import models
 
 # Create your models here.
 
+# CRIAR VARIAVEL DE TOKEN ENTREGUE E DE ATIVO/INATIVO
+
 FUNCOES = [
     ("Médico", "Médico"),
     ("Enfermeiro", "Enfermeiro"),
