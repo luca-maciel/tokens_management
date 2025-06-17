@@ -27,7 +27,7 @@
 
     <div class="mb-3">
         <label for="funcao_responsavel" class="form-label">Função</label>
-        <select class="form-select" name="funcao_responsavel" id="funcao_responsavel">
+        <select class="form-select" name="funcao_responsavel" id="funcao_responsavel" value="{{ token.funcao_responsavel }}">
             {% for funcao in funcoes %}
                 <option value="{{ funcao }}">{{ funcao }}</option>
             {% endfor %}

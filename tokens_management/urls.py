@@ -10,4 +10,5 @@ urlpatterns = [
     path("novos_tokens/", views.atualizar_lista, name="atualizar_lista"),
     path("atualizar_token/<int:token_id>/", views.atualizar_token, name="atualizar_token"),
     path("novo_token/", views.novo_token, name="novo_token"),
+    path("login/", views.login, name="login"),
 ]
