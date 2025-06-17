@@ -40,7 +40,7 @@ def atualiza_lista_tokens():
         if novos_tokens[token]["observacao"] is None:
             novos_tokens[token]["observacao"] = ""
 
-        print(f"{novos_tokens[token]}\n")
+        # print(f"{novos_tokens[token]}\n")
 
     return novos_tokens
 
