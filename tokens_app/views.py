@@ -75,8 +75,17 @@ def atualizar_lista(request):
     
     for token in novos_tokens.values():
         try:
-            token = Token.objects.get(serial=token['nome_responsavel'])
-            print(f"Token {token.serial} já existe, não será atualizado.")
+            has_token = Token.objects.get(nome_responsavel=token['nome_responsavel'])
+            
+            has_token.nome_responsavel=token['nome_responsavel']
+            has_token.cpf_responsavel=token['cpf_responsavel']
+            has_token.funcao_responsavel=token['funcao_responsavel']
+            has_token.serial=token['serial']
+            has_token.data_solicitacao=token['data_solicitacao']
+            has_token.data_entrega=token['data_entrega']
+            has_token.observacao=token['observacao']
+            has_token.save()
+            print(f"Token {has_token.serial} - {has_token.nome_responsavel} já existe, Foi atualizado.")
         except Token.DoesNotExist:
             new_token = Token(
                 nome_responsavel=token['nome_responsavel'],
