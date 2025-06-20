@@ -8,8 +8,8 @@ from django.contrib.auth import get_user_model, authenticate, login as auth_logi
 User = get_user_model()
 
 def home(request):
-    
-    return render(request, 'home.html')
+    print(request.user)
+    return render(request, 'home.html', {"usuario": request.user})
 
 def lista_tokens(request):
     # print(request.user)
@@ -17,7 +17,7 @@ def lista_tokens(request):
         return redirect('login')
     else:
         tokens = Token.objects.all()
-        return render(request, 'lista_tokens.html', {'tokens': tokens})
+        return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user})
 
 def novo_token(request):
     if not request.user.is_authenticated:
@@ -50,9 +50,9 @@ def novo_token(request):
                 return HttpResponse("Token já cadastrado com este nome, CPF ou serial.")
             except Token.DoesNotExist:
                 token.save()
-            return render(request, 'lista_tokens.html', {'tokens': Token.objects.all(), "sucesso": "Token cadastrado com sucesso!"})
+            return render(request, 'lista_tokens.html', {'tokens': Token.objects.all(), "sucesso": "Token cadastrado com sucesso!", "usuario": request.user})
 
-        return render(request, 'novo_token.html', {"funcoes": funcoes})
+        return render(request, 'novo_token.html', {"funcoes": funcoes, "usuario": request.user})
 
 def atualizar_token(request, token_id):
     if not request.user.is_authenticated:
@@ -77,8 +77,8 @@ def atualizar_token(request, token_id):
                 token.data_entrega = None
             token.observacao = request.POST.get('observacao')
             token.save()
-            return render(request, 'lista_tokens.html', {'tokens': Token.objects.all(), "sucesso": "Token atualizado com sucesso!"})
-        return render(request, 'token.html', {'token': token, "funcoes": funcoes})
+            return render(request, 'lista_tokens.html', {'tokens': Token.objects.all(), "sucesso": "Token atualizado com sucesso!", "usuario": request.user})
+        return render(request, 'token.html', {'token': token, "funcoes": funcoes, "usuario": request.user})
 
 def atualizar_lista(request):
     """
@@ -155,4 +155,4 @@ def login(request):
 
 def logout(request):
     logout_django(request)
-    return redirect('login')
+    return redirect('home')
