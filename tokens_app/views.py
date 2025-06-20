@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from .models import Token, funcoes
 import openpyxl as xl
 from .atualiza_lista import atualiza_lista_tokens
-from django.contrib.auth import get_user_model, authenticate, login as auth_login, logout
+from django.contrib.auth import get_user_model, authenticate, login as auth_login, logout as logout_django
 
 User = get_user_model()
 
@@ -152,3 +152,7 @@ def login(request):
         else:
             return render(request, 'login.html', {'error': 'Usuário ou senha inválidos.'})
     return render(request, 'login.html')
+
+def logout(request):
+    logout_django(request)
+    return redirect('login')

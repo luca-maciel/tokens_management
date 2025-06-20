@@ -16,6 +16,7 @@
             <a href="{% url 'home' %}" class="btn btn-secondary">Voltar</a>
             <a href="{% url 'novo_token' %}" class="btn btn-primary">Cadastrar Token</a>
             <a href="{% url 'lista_tokens' %}" name="recarregar_lista" class="btn btn-info">Atualizar lista</a>
+            <a href="{% url 'logout' %}" name="logout" class="btn btn-danger">Sair</a>
         </div>
         <br>
         <input type="text" id='searchInput' placeholder='Pesquisar por nome, CPF ou setor...' class="form-control">
