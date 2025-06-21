@@ -33,8 +33,9 @@
                         <!-- <th>Telefone</th> -->
                         <th>Data de solicitação</th>
                         <th>Data de entrega</th>
+                        <th>Criado por</th>
+                        <th>Ultima modificação por</th>
                         <th>Observação</th>
-
 
                     </tr>
                 </thead>
@@ -58,13 +59,14 @@
                                 <!-- <td id="telefone">{{ token.telefone_responsavel }}</td> -->
                                 <td>{{ token.data_solicitacao }}</td>
                                 <td>{{ token.data_entrega }}</td>
+                                <td>{{ token.criador}} </td>
+                                <td> {{token.modificador}} </td>
                                 {% if token.observacao != "" %}
                                 {% if token.observacao|length > 30 %}
                                 <td>Entre na edição para ver a observação.</td>
                                 {% else %}
                                 <td>{{token.observacao}}</td>
                                 {% endif %}
-
                                 {% else %}
                                 <td><b>Nenhuma observação</b></td>
                                 {% endif %}
@@ -128,6 +130,11 @@
                 }
             });
         });
+
+        window.onload = ()=>{
+            const searchInput = document.getElementById('searchInput');
+            searchInput.focus();
+        };
     </script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

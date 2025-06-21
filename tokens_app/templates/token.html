@@ -28,8 +28,11 @@
     <div class="mb-3">
         <label for="funcao_responsavel" class="form-label">Função</label>
         <select class="form-select" name="funcao_responsavel" id="funcao_responsavel" value="{{ token.funcao_responsavel }}">
+            <option value="{{token.funcao_responsavel}}">{{token.funcao_responsavel}}</option>
             {% for funcao in funcoes %}
-                <option value="{{ funcao }}">{{ funcao }}</option>
+                {% if funcao != token.funcao_responsavel %}
+                    <option value="{{ funcao }}">{{ funcao }}</option>
+                {% endif %}
             {% endfor %}
         </select>
     </div>
@@ -62,7 +65,7 @@
         <label for="data_entrega" class="form-label">Data de entrega</label>
         <input type="date" class="form-control" name="data_entrega" id="data_entrega" value="{{ token.data_entrega }}">
         <label for="entregue">Entregue? </label>
-            <input type="checkbox" name="entregue" id="entregue" class="form-check-input" onchange="console.log(this.checked)">
+            <input type="checkbox" name="token_entregue" id="entregue" class="form-check-input" onchange="console.log(this.checked)" {% if token.token_entregue %} checked {% endif %}>
         <label for=""></label>
     </div>
 
@@ -85,7 +88,8 @@
     <span id="naoSucesso"></span>
 {% endif %}
 <script>
-     var entregue = document.getElementById("entregue");
+
+    var entregue = document.getElementById("entregue");
 
     var data_entrega = document.getElementById("data_entrega");
 

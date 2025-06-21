@@ -43,6 +43,8 @@ class Token(models.Model):
     data_entrega = models.DateField(blank=True, null=True)
     data_modificacao = models.DateField(auto_now=True)
     observacao = models.TextField(null=True, blank=True)
+    criador = models.CharField(max_length=125, null=True, blank=True)
+    modificador = models.CharField(max_length=125, null=True, blank=True)
     token_entregue = models.BooleanField(default=False)
     token_ativo = models.BooleanField(default=True)
     def __str__(self):

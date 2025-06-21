@@ -33,6 +33,7 @@ def novo_token(request):
             data_solicitacao = request.POST.get('data_solicitacao') or None
             data_entrega = request.POST.get('data_entrega') or None
             observacao = request.POST.get('observacao')
+            # token_entregue = request.POST.get('token_entregue') == 'on'
 
             token = Token(
                 nome_responsavel=nome_responsavel,
@@ -43,7 +44,10 @@ def novo_token(request):
                 serial=serial,
                 data_solicitacao=data_solicitacao,
                 data_entrega=data_entrega,
-                observacao=observacao
+                observacao=observacao,
+                token_entregue=(request.POST.get('token_entregue') == 'on'),
+                criador=request.user.username,
+                modificador=request.user.username,
             )
             try:
                 Token.objects.get(nome_responsavel=nome_responsavel) or Token.objects.get(serial=serial) or Token.objects.get(cpf_responsavel=cpf_responsavel)
@@ -60,6 +64,8 @@ def atualizar_token(request, token_id):
     else:
         # return HttpResponse("This view is not implemented yet.")
         token = Token.objects.get(id=token_id)
+        print(token.data_entrega)
+
         if request.method == 'POST':
             token.nome_responsavel = request.POST.get('nome_responsavel')
             token.cpf_responsavel = request.POST.get('cpf_responsavel')
@@ -76,6 +82,8 @@ def atualizar_token(request, token_id):
             else:
                 token.data_entrega = None
             token.observacao = request.POST.get('observacao')
+            token.modificador = request.user.username
+            token.token_entregue = (request.POST.get('token_entregue') == 'on')
             token.save()
             return render(request, 'lista_tokens.html', {'tokens': Token.objects.all(), "sucesso": "Token atualizado com sucesso!", "usuario": request.user})
         return render(request, 'token.html', {'token': token, "funcoes": funcoes, "usuario": request.user})
