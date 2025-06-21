@@ -7,17 +7,36 @@ from django.contrib.auth import get_user_model, authenticate, login as auth_logi
 
 User = get_user_model()
 
+assistentes = User.objects.all()
+
+data_entregas = []
+for token in Token.objects.all():
+    if token.data_entrega:
+        if token.data_entrega.strftime("%d-%m-%Y") not in data_entregas:
+            data_entregas.append(token.data_entrega.strftime("%d-%m-%Y"))
+
 def home(request):
-    print(request.user)
+    # print(request.user)
     return render(request, 'home.html', {"usuario": request.user})
 
-def lista_tokens(request):
+def lista_tokens(request,):
     # print(request.user)
     if not request.user.is_authenticated:
         return redirect('login')
     else:
         tokens = Token.objects.all()
-        return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user})
+        # print(data_entregas)
+        return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "assistentes": assistentes})
+
+def lista_tokens_funcao(request, funcao):
+    # print(request.user)
+    if not request.user.is_authenticated:
+        return redirect('login')
+    else:
+        tokens = Token.objects.filter(funcao_responsavel=funcao)
+        if not tokens:
+            return HttpResponse("Nenhum token encontrado para esta função.")
+        return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "assistentes": assistentes})
 
 def novo_token(request):
     if not request.user.is_authenticated:
@@ -54,7 +73,7 @@ def novo_token(request):
                 return HttpResponse("Token já cadastrado com este nome, CPF ou serial.")
             except Token.DoesNotExist:
                 token.save()
-            return render(request, 'lista_tokens.html', {'tokens': Token.objects.all(), "sucesso": "Token cadastrado com sucesso!", "usuario": request.user})
+            return render(request, 'lista_tokens.html', {'tokens': Token.objects.all(), "sucesso": "Token cadastrado com sucesso!", "usuario": request.user, "funcoes": funcoes, "assistentes": assistentes})
 
         return render(request, 'novo_token.html', {"funcoes": funcoes, "usuario": request.user})
 
@@ -85,8 +104,8 @@ def atualizar_token(request, token_id):
             token.modificador = request.user.username
             token.token_entregue = (request.POST.get('token_entregue') == 'on')
             token.save()
-            return render(request, 'lista_tokens.html', {'tokens': Token.objects.all(), "sucesso": "Token atualizado com sucesso!", "usuario": request.user})
-        return render(request, 'token.html', {'token': token, "funcoes": funcoes, "usuario": request.user})
+            return render(request, 'lista_tokens.html', {'tokens': Token.objects.all(), "sucesso": "Token atualizado com sucesso!", "usuario": request.user, "funcoes": funcoes, "assistentes": assistentes})
+        return render(request, 'token.html', {'token': token, "funcoes": funcoes, "usuario": request.user, "assistentes": assistentes})
 
 def atualizar_lista(request):
     """

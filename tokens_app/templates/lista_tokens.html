@@ -28,7 +28,14 @@
                         <th>Serial</th>
                         <th>Nome</th>
                         <th>Cpf</th>
-                        <th>Função</th>
+                        <th>
+                            <select name="select_funcao" id="select_funcao" onchange="window.location.href='/lista_tokens/' + this.value">
+                                <option>Função</option>
+                                {% for funcao in funcoes %}
+                                    <option value="{{ funcao }}">{{ funcao }}</option>
+                                {% endfor %}
+                            </select>
+                        </th>
                         <!-- <th>Setor</th> -->
                         <!-- <th>Telefone</th> -->
                         <th>Data de solicitação</th>

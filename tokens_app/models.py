@@ -23,6 +23,8 @@ FUNCOES = [
 
 funcoes = [funcao[0] for funcao in FUNCOES]
 
+
+
 # SETORES = [
 #     ("Administração", "Administração"),
 #     ("Financeiro", "Financeiro"),
