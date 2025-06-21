@@ -4,6 +4,10 @@ from .models import Token, funcoes
 import openpyxl as xl
 from .atualiza_lista import atualiza_lista_tokens
 from django.contrib.auth import get_user_model, authenticate, login as auth_login, logout as logout_django
+import logging
+import time
+
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -17,6 +21,7 @@ for token in Token.objects.all():
 
 def home(request):
     # print(request.user)
+    logger.info(f"User {request.user.username} Acessou a página inicial. {time.strftime('%Y-%m-%d %H:%M:%S')}")
     return render(request, 'home.html', {"usuario": request.user})
 
 def lista_tokens(request,):
@@ -24,6 +29,7 @@ def lista_tokens(request,):
     if not request.user.is_authenticated:
         return redirect('login')
     else:
+        logger.info(f"User {request.user.username} Acessou a lista de tokens. {time.strftime('%Y-%m-%d %H:%M:%S')}")
         # organizar tokens por ordem alfabetica
         tokens = Token.objects.all().order_by('nome_responsavel')
         # tokens = Token.objects.all()
@@ -35,6 +41,7 @@ def lista_tokens_funcao(request, funcao):
     if not request.user.is_authenticated:
         return redirect('login')
     else:
+        logger.info(f"User {request.user.username} Acessou a lista de tokens da função {funcao}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
         tokens = Token.objects.filter(funcao_responsavel=funcao).order_by('nome_responsavel')
         if not tokens:
             return HttpResponse("Nenhum token encontrado para esta função.")
@@ -71,12 +78,14 @@ def novo_token(request):
                 modificador=request.user.username,
             )
             try:
+                logger.info(f"User {request.user.username} tentou cadastrar um novo token: {nome_responsavel}, CPF: {cpf_responsavel}, Serial: {serial}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
                 Token.objects.get(nome_responsavel=nome_responsavel) or Token.objects.get(serial=serial) or Token.objects.get(cpf_responsavel=cpf_responsavel)
                 return HttpResponse("Token já cadastrado com este nome, CPF ou serial.")
             except Token.DoesNotExist:
+                logger.info(f"User {request.user.username} cadastrou um novo token: {nome_responsavel}, CPF: {cpf_responsavel}, Serial: {serial}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
                 token.save()
             return render(request, 'lista_tokens.html', {'tokens': Token.objects.all(), "sucesso": "Token cadastrado com sucesso!", "usuario": request.user, "funcoes": funcoes, "assistentes": assistentes})
-
+        logger.info(f"User {request.user.username} acessou a página de cadastro de novo token. {time.strftime('%Y-%m-%d %H:%M:%S')}")
         return render(request, 'novo_token.html', {"funcoes": funcoes, "usuario": request.user})
 
 def atualizar_token(request, token_id):
@@ -85,7 +94,7 @@ def atualizar_token(request, token_id):
     else:
         # return HttpResponse("This view is not implemented yet.")
         token = Token.objects.get(id=token_id)
-        print(token.data_entrega)
+        logger.info(f"User {request.user.username} acessou a página de atualização do token de: {token.nome_responsavel}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
 
         if request.method == 'POST':
             token.nome_responsavel = request.POST.get('nome_responsavel')
@@ -105,8 +114,10 @@ def atualizar_token(request, token_id):
             token.observacao = request.POST.get('observacao')
             token.modificador = request.user.username
             token.token_entregue = (request.POST.get('token_entregue') == 'on')
+            logger.info(f"User {request.user.username} atualizou o token: {token.nome_responsavel}, CPF: {token.cpf_responsavel}, Serial: {token.serial}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
             token.save()
             return render(request, 'lista_tokens.html', {'tokens': Token.objects.all(), "sucesso": "Token atualizado com sucesso!", "usuario": request.user, "funcoes": funcoes, "assistentes": assistentes})
+        
         return render(request, 'token.html', {'token': token, "funcoes": funcoes, "usuario": request.user, "assistentes": assistentes})
 
 def atualizar_lista(request):
@@ -168,21 +179,26 @@ def atualizar_lista(request):
         return redirect('lista_tokens')
 
 def admin(request):
+    logger.info(f"User {request.user.username} acessou a área administrativa. {time.strftime('%Y-%m-%d %H:%M:%S')}")
     return redirect('/admin')
 
 def login(request):
+    logger.info(f"Usuário acessou a página de login. {time.strftime('%Y-%m-%d %H:%M:%S')}")
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         if user is not None:
             auth_login(request, user)
+            logger.info(f"Usuário {username} logou com sucesso. {time.strftime('%Y-%m-%d %H:%M:%S')}")
             return redirect('home')
         else:
+            logger.warning(f"Tentativa de login falhou para o usuário {username}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
             return render(request, 'login.html', {'error': 'Usuário ou senha inválidos.'})
     return render(request, 'login.html')
 
 def logout(request):
+    logger.info(f"Usuário {request.user.username} fez logout. {time.strftime('%Y-%m-%d %H:%M:%S')}")
     logout_django(request)
     return redirect('home')
 
@@ -216,4 +232,5 @@ def exportar_planilha(request):
             sheet.append(row)
 
         workbook.save(response)
+        logger.info(f"Usuário {request.user.username} exportou a lista de tokens para uma planilha Excel. {time.strftime('%Y-%m-%d %H:%M:%S')}")
         return response
