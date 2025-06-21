@@ -11,6 +11,7 @@ FUNCOES = [
     ("Fisioterapeuta", "Fisioterapeuta"),
     ("Nutricionista", "Nutricionista"),
     ("Farmacêutico", "Farmacêutico"),
+    ("Ortopedista", "Ortopedista"),
     ("Psicólogo", "Psicólogo"),
     ("Assistente Social", "Assistente Social"),
     ("Técnico de Radiologia", "Técnico de Radiologia"),
