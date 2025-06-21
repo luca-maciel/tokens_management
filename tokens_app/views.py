@@ -24,7 +24,9 @@ def lista_tokens(request,):
     if not request.user.is_authenticated:
         return redirect('login')
     else:
-        tokens = Token.objects.all()
+        # organizar tokens por ordem alfabetica
+        tokens = Token.objects.all().order_by('nome_responsavel')
+        # tokens = Token.objects.all()
         # print(data_entregas)
         return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "assistentes": assistentes})
 
@@ -33,7 +35,7 @@ def lista_tokens_funcao(request, funcao):
     if not request.user.is_authenticated:
         return redirect('login')
     else:
-        tokens = Token.objects.filter(funcao_responsavel=funcao)
+        tokens = Token.objects.filter(funcao_responsavel=funcao).order_by('nome_responsavel')
         if not tokens:
             return HttpResponse("Nenhum token encontrado para esta função.")
         return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "assistentes": assistentes})
@@ -183,3 +185,35 @@ def login(request):
 def logout(request):
     logout_django(request)
     return redirect('home')
+
+def exportar_planilha(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    else:
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="tokens.xlsx"'
+
+        workbook = xl.Workbook()
+        sheet = workbook.active
+        sheet.title = 'Tokens'
+
+        # Cabeçalhos
+        headers = ['Nome', 'CPF', 'Função', 'Serial', 'Data de Solicitação', 'Data de Entrega', 'Observação', 'Criador']
+        sheet.append(headers)
+
+        # Dados dos tokens
+        for token in Token.objects.all().order_by('nome_responsavel'):
+            row = [
+                token.nome_responsavel,
+                token.cpf_responsavel,
+                token.funcao_responsavel,
+                token.serial,
+                token.data_solicitacao.strftime('%d/%m/%Y') if token.data_solicitacao else '',
+                token.data_entrega.strftime('%d/%m/%Y') if token.data_entrega else '',
+                token.observacao,
+                token.criador
+            ]
+            sheet.append(row)
+
+        workbook.save(response)
+        return response

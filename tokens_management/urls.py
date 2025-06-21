@@ -13,4 +13,5 @@ urlpatterns = [
     path("novo_token/", views.novo_token, name="novo_token"),
     path("login/", views.login, name="login"),
     path("logout/", views.logout, name="logout"),
+    path("exportar_planilha/", views.exportar_planilha, name="exportar_planilha"),
 ]
