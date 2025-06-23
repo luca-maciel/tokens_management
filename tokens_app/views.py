@@ -94,6 +94,11 @@ def atualizar_token(request, token_id):
     else:
         # return HttpResponse("This view is not implemented yet.")
         token = Token.objects.get(id=token_id)
+        try: 
+            token.data_entrega = token.data_entrega.strftime("20%y-%m-%d")
+        except:
+            pass
+        # print(token.data_entrega.strftime("%d/%m/20%y"))
         logger.info(f"User {request.user.username} acessou a página de atualização do token de: {token.nome_responsavel}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
 
         if request.method == 'POST':

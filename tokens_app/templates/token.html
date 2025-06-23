@@ -63,10 +63,10 @@
 
     <div class="mb-3">
         <label for="data_entrega" class="form-label">Data de entrega</label>
-        {% if token.data_entrega != None %}
-        <span id="dataEnt" value="{{token.data_entrega}}"> - {{token.data_entrega}}</span>
-        {% endif %}
-        <input type="date" class="form-control" name="data_entrega" id="data_entrega" value="{{ token.data_entrega }}">
+        <!-- {% if token.data_entrega != None %}
+        <i id="dataEnt" value="{{token.data_entrega}}">{{token.data_entrega}}</i>
+        {% endif %} -->
+        <input type="date" class="form-control" name="data_entrega" id="data_entrega" {% if token.data_entrega != None %} value="{{ token.data_entrega }}" {% endif %}>
         <label for="entregue">Entregue? </label>
             <input type="checkbox" name="token_entregue" id="entregue" class="form-check-input" onchange="console.log(this.checked)" {% if token.token_entregue %} checked {% endif %}>
         <label for=""></label>
@@ -96,6 +96,10 @@
 
     var data_entrega = document.getElementById("data_entrega");
 
+    data_entrega.innerHTML = document.getElementById("dataEnt").value;
+
+
+
     entregue.addEventListener("change", ()=>{
         if (entregue === true || entregue.checked) {
             data_entrega.removeAttribute("disabled");
@@ -107,7 +111,6 @@
             data_entrega.value = "";
         }
     })
-    
     if (document.getElementById("naoSucesso")) {
         document.body.style.marginTop = "50px";
     }
