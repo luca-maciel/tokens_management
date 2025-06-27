@@ -1,6 +1,9 @@
 import os
 from pathlib import Path
+import datetime as date
 
+data_atual = date.datetime.now().date()
+# print(data_atual)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 LOG_DIR = os.path.join(BASE_DIR, 'logs')
@@ -20,7 +23,7 @@ LOGGING = {
     'handlers': {
         'file_daily': {
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': os.path.join(LOG_DIR, 'app.log'),
+            'filename': os.path.join(LOG_DIR, f"{data_atual}.log"),
             'when': 'midnight',
             'interval': 1,
             'backupCount': 7,

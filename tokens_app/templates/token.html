@@ -22,7 +22,7 @@
 
     <div class="mb-3">
         <label for="cpf" class="form-label">CPF do responsável</label>
-        <input type="text" class="form-control" name="cpf_responsavel" id="cpf" value="{{ token.cpf_responsavel }}" placeholder="000.000.000-00" maxlength="14">
+        <input type="text" class="form-control" name="cpf_responsavel" id="cpf" {%if token.cpf_responsavel != None %} value="{{ token.cpf_responsavel }}" {% endif %} placeholder="000.000.000-00" maxlength="14">
     </div>
 
     <div class="mb-3">
@@ -83,7 +83,7 @@
     </div>
 </form>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 
@@ -91,6 +91,11 @@
     <span id="naoSucesso"></span>
 {% endif %}
 <script>
+    var cpf = document.getElementById("cpf");
+
+    $(document).ready(function () {
+        $('#cpf').mask('000.000.000-00');
+    });
 
     var entregue = document.getElementById("entregue");
 
@@ -115,12 +120,9 @@
         document.body.style.marginTop = "50px";
     }
 
-    var cpf = document.getElementById("cpf");
-    $(document).ready(function () {
-        $('#cpf').mask('000.000.000-00');
-    });
-    $(document).ready(function () {
+
+    {% comment %} $(document).ready(function () {
         $('#telefone').mask('(00) 00000-0000');
-    });
+    }); {% endcomment %}
 </script>
 {% endblock %}
