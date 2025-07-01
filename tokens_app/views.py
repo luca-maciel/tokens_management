@@ -14,10 +14,14 @@ User = get_user_model()
 assistentes = User.objects.all()
 
 data_entregas = []
+
 for token in Token.objects.all():
     if token.data_entrega:
         if token.data_entrega.strftime("%d-%m-%Y") not in data_entregas:
             data_entregas.append(token.data_entrega.strftime("%d-%m-%Y"))
+# Organizar a lista de datas de entrega
+
+data_entregas.sort(key=lambda x: time.strptime(x, "%d-%m-%Y"))
 
 def home(request):
     # print(request.user)
@@ -47,7 +51,7 @@ def lista_tokens_funcao(request, funcao):
             return HttpResponse("Nenhum token encontrado para esta função.")
         return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "assistentes": assistentes})
 
-def lista_tokens_assistente(request, assistente_id):
+def lista_tokens_assistente_modificador(request, assistente_id):
     if not request.user.is_authenticated:
         return redirect('login')
     else:
@@ -58,6 +62,33 @@ def lista_tokens_assistente(request, assistente_id):
             return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "assistentes": assistentes})
         except User.DoesNotExist:
             return HttpResponse("Assistente não encontrado.")
+
+def lista_tokens_assistente_criador(request, assistente_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    else:
+        try:
+            assistente = User.objects.get(id=assistente_id)
+            tokens = Token.objects.filter(criador=assistente.username).order_by('nome_responsavel')
+            logger.info(f"User {request.user.username} Acessou a lista de ultimos tokens criados por: {assistente.username}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
+            return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "assistentes": assistentes})
+        except User.DoesNotExist:
+            return HttpResponse("Assistente não encontrado.")
+
+def lista_tokens_data_entrega(request, data_entrega):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    else:
+        try:
+            data_entrega = time.strptime(data_entrega, "%d-%m-%Y")
+            data_entrega = time.strftime("%Y-%m-%d", data_entrega)
+            tokens = Token.objects.filter(data_entrega=data_entrega).order_by('nome_responsavel')
+            if not tokens:
+                return HttpResponse("Nenhum token encontrado para esta data de entrega.")
+            logger.info(f"User {request.user.username} Acessou a lista de tokens com data de entrega: {data_entrega}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
+            return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "assistentes": assistentes})
+        except Exception as e:
+            return HttpResponse(f"Erro ao filtrar tokens por data de entrega: {str(e)}")
 
 def novo_token(request):
     if not request.user.is_authenticated:

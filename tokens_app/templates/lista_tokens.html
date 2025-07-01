@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Lista de Tokens - Tokens App{% endblock %}
 
 {% block content %}
@@ -11,8 +12,17 @@
 
 <div class="container">
     <div class="head">
+        <div class="logo-container" style="
+            display: flex;
+            align-items: center;
+        ">
+            <img src="{% static 'tokens_app/images/logo.png' %}" alt="Logo Tokens" class="logo-img" style="height: 60px;
+        max-width: 100%;
+        object-fit: contain;">
+        </div>
         <div class="head_left">
-            <h1>Lista de Tokens</h1>
+            <br>
+            <!-- <h1>Lista de Tokens</h1> -->
             <a href="{% url 'home' %}" class="btn btn-secondary">Voltar</a>
             <a href="{% url 'novo_token' %}" class="btn btn-primary">Cadastrar Token</a>
             <a href="{% url 'lista_tokens' %}" name="recarregar_lista" class="btn btn-info">Atualizar lista</a>
@@ -40,10 +50,24 @@
                         <!-- <th>Setor</th> -->
                         <!-- <th>Telefone</th> -->
                         <th>Data de solicitação</th>
-                        <th>Data de entrega</th>
-                        <th>Criado por</th>
+                        <th>Data de entrega
+                            <select name="data_entrega" id="data_entrega" onchange="console.log(window.location.href='/lista_tokens_data_entrega/' + this.value)">
+                                <option value="">Selecione</option>
+                                {% for data in data_entregas %}
+                                    <option value="{{ data }}">{{ data }}</option>
+                                {% endfor %}
+                            </select>
+                        </th>
+                        <th>Criado por
+                            <select name="criador" id="criador" onchange="window.location.href='/lista_tokens_assistente_criador/' + this.value">
+                                <option value="">Selecione</option>
+                                {% for assistente in assistentes %}
+                                    <option value="{{ assistente.id }}">{{ assistente.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </th>
                         <th>Ultima modificação por
-                            <select name="ultimaModificacao" id="ultimaModificacao" onchange="window.location.href='/lista_tokens_assistente/' + this.value">
+                            <select name="ultimaModificacao" id="ultimaModificacao" onchange="window.location.href='/lista_tokens_assistente_modificador/' + this.value">
                                 <option value="">Selecione</option>
                                 {% for assistente in assistentes %}
                                     <option value="{{ assistente.id }}">{{ assistente.username }}</option>
