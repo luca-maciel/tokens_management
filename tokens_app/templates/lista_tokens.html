@@ -29,9 +29,9 @@
                         <th>Serial</th>
                         <th>Nome</th>
                         <th>Cpf</th>
-                        <th>
+                        <th>Função
                             <select name="select_funcao" id="select_funcao" onchange="window.location.href='/lista_tokens/' + this.value">
-                                <option>Função</option>
+                                <option>Selecione</option>
                                 {% for funcao in funcoes %}
                                     <option value="{{ funcao }}">{{ funcao }}</option>
                                 {% endfor %}
@@ -42,7 +42,14 @@
                         <th>Data de solicitação</th>
                         <th>Data de entrega</th>
                         <th>Criado por</th>
-                        <th>Ultima modificação por</th>
+                        <th>Ultima modificação por
+                            <select name="ultimaModificacao" id="ultimaModificacao" onchange="window.location.href='/lista_tokens_assistente/' + this.value">
+                                <option value="">Selecione</option>
+                                {% for assistente in assistentes %}
+                                    <option value="{{ assistente.id }}">{{ assistente.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </th>
                         <th>Observação</th>
 
                     </tr>

@@ -47,6 +47,18 @@ def lista_tokens_funcao(request, funcao):
             return HttpResponse("Nenhum token encontrado para esta função.")
         return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "assistentes": assistentes})
 
+def lista_tokens_assistente(request, assistente_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    else:
+        try:
+            assistente = User.objects.get(id=assistente_id)
+            tokens = Token.objects.filter(modificador=assistente.username).order_by('nome_responsavel')
+            logger.info(f"User {request.user.username} Acessou a lista de ultimos tokens modificados por: {assistente.username}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
+            return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "assistentes": assistentes})
+        except User.DoesNotExist:
+            return HttpResponse("Assistente não encontrado.")
+
 def novo_token(request):
     if not request.user.is_authenticated:
         return redirect('login')

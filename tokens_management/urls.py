@@ -8,6 +8,7 @@ urlpatterns = [
     path("", views.home, name="home"),
     path("lista_tokens/", views.lista_tokens, name="lista_tokens"),
     path("lista_tokens/<str:funcao>/", views.lista_tokens_funcao, name="lista_tokens_funcao"),
+    path("lista_tokens_assistente/<int:assistente_id>/", views.lista_tokens_assistente, name="lista_tokens_assistente"),
     path("novos_tokens/", views.atualizar_lista, name="atualizar_lista"),
     path("atualizar_token/<int:token_id>/", views.atualizar_token, name="atualizar_token"),
     path("novo_token/", views.novo_token, name="novo_token"),
