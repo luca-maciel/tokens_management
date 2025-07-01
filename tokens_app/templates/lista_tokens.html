@@ -57,14 +57,6 @@
                 <tbody>
                     {% for token in tokens %}
                         {% if token.token_ativo %}
-
-                            <div id="meuModal" class="modal-custom">
-                                <div id="modal-{{ token.id }}" class="modal-content-custom">
-                                    <span class="close-modal" data-modal-id="modal-{{ token.id }}">&times;</span>
-                                    <h5>Observação</h5>
-                                    <p>{{token.observacao}}</p>
-                                </div>
-                            </div>
                             <tr>
                                 <td>{{ token.serial }}</td>
                                 <td><a href="{% url 'atualizar_token' token.id %}" style="text-decoration: none;">{{ token }}</a></td>
