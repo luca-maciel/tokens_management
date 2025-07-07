@@ -113,32 +113,6 @@
     <span id="naoSucesso"></span>
     {% endif %}
     <script>
-
-        if (document.getElementById("naoSucesso")) {
-            document.body.style.marginTop = "50px";
-        }
-        const modal = document.getElementById("meuModal");
-        var btns = document.getElementsByClassName("abrirModal");
-        const fechar = document.querySelector(".close-modal");
-
-        for (btn of btns) {
-            btn.onclick = () => {
-                modal.classList.add("ativo");
-            }
-        }
-        // btn.onclick = () => {
-        //     modal.classList.add("ativo");
-        // }
-
-        fechar.onclick = () => {
-            modal.classList.remove("ativo");
-        }
-
-        window.onclick = (event) => {
-            if (event.target === modal) {
-                modal.classList.remove("ativo");
-            }
-        }
         const searchInput = document.getElementById('searchInput');
         searchInput.addEventListener('input', function () {
             const filter = this.value.toLowerCase();
