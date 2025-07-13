@@ -15,10 +15,18 @@ assistentes = User.objects.all()
 
 data_entregas = []
 
+data_solicitacoes = []
+
 for token in Token.objects.all():
     if token.data_entrega:
         if token.data_entrega.strftime("%d-%m-%Y") not in data_entregas:
             data_entregas.append(token.data_entrega.strftime("%d-%m-%Y"))
+    if token.data_solicitacao:
+        if token.data_solicitacao.strftime("%d-%m-%Y") not in data_solicitacoes:
+            data_solicitacoes.append(token.data_solicitacao.strftime("%d-%m-%Y"))
+            
+# Organizar a lista de datas de solicitação
+data_solicitacoes.sort(key=lambda x: time.strptime(x, "%d-%m-%Y"))
 # Organizar a lista de datas de entrega
 
 data_entregas.sort(key=lambda x: time.strptime(x, "%d-%m-%Y"))
@@ -38,7 +46,7 @@ def lista_tokens(request,):
         tokens = Token.objects.all().order_by('nome_responsavel')
         # tokens = Token.objects.all()
         # print(data_entregas)
-        return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "assistentes": assistentes})
+        return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "data_solicitacoes": data_solicitacoes, "assistentes": assistentes})
 
 def lista_tokens_funcao(request, funcao):
     # print(request.user)
@@ -49,7 +57,7 @@ def lista_tokens_funcao(request, funcao):
         tokens = Token.objects.filter(funcao_responsavel=funcao).order_by('nome_responsavel')
         if not tokens:
             return HttpResponse("Nenhum token encontrado para esta função.")
-        return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "assistentes": assistentes})
+        return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "data_solicitacoes": data_solicitacoes, "assistentes": assistentes})
 
 def lista_tokens_assistente_modificador(request, assistente_id):
     if not request.user.is_authenticated:
@@ -59,7 +67,7 @@ def lista_tokens_assistente_modificador(request, assistente_id):
             assistente = User.objects.get(id=assistente_id)
             tokens = Token.objects.filter(modificador=assistente.username).order_by('nome_responsavel')
             logger.info(f"User {request.user.username} Acessou a lista de ultimos tokens modificados por: {assistente.username}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
-            return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "assistentes": assistentes})
+            return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "data_solicitacoes": data_solicitacoes, "assistentes": assistentes})
         except User.DoesNotExist:
             return HttpResponse("Assistente não encontrado.")
 
@@ -71,9 +79,24 @@ def lista_tokens_assistente_criador(request, assistente_id):
             assistente = User.objects.get(id=assistente_id)
             tokens = Token.objects.filter(criador=assistente.username).order_by('nome_responsavel')
             logger.info(f"User {request.user.username} Acessou a lista de ultimos tokens criados por: {assistente.username}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
-            return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "assistentes": assistentes})
+            return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "data_solicitacoes": data_solicitacoes, "assistentes": assistentes})
         except User.DoesNotExist:
             return HttpResponse("Assistente não encontrado.")
+
+def lista_tokens_data_solicitacao(request, data_solicitacao):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    else:
+        try:
+            data_solicitacao = time.strptime(data_solicitacao, "%d-%m-%Y")
+            data_solicitacao = time.strftime("%Y-%m-%d", data_solicitacao)
+            tokens = Token.objects.filter(data_solicitacao=data_solicitacao).order_by('nome_responsavel')
+            if not tokens:
+                return HttpResponse("Nenhum token encontrado para esta data de solicitação.")
+            logger.info(f"User {request.user.username} Acessou a lista de tokens com data de solicitação: {data_solicitacao}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
+            return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "data_solicitacoes": data_solicitacoes, "assistentes": assistentes})
+        except Exception as e:
+            return HttpResponse(f"Erro ao filtrar tokens por data de solicitação: {str(e)}")
 
 def lista_tokens_data_entrega(request, data_entrega):
     if not request.user.is_authenticated:
@@ -86,7 +109,7 @@ def lista_tokens_data_entrega(request, data_entrega):
             if not tokens:
                 return HttpResponse("Nenhum token encontrado para esta data de entrega.")
             logger.info(f"User {request.user.username} Acessou a lista de tokens com data de entrega: {data_entrega}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
-            return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "assistentes": assistentes})
+            return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "data_solicitacoes": data_solicitacoes, "assistentes": assistentes})
         except Exception as e:
             return HttpResponse(f"Erro ao filtrar tokens por data de entrega: {str(e)}")
 
@@ -105,7 +128,7 @@ def lista_tokens_entregue(request, entregue):
             return HttpResponse("Nenhum token encontrado com o status de entrega especificado.")
         
         logger.info(f"User {request.user.username} Acessou a lista de tokens entregues: {entregue}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
-        return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "assistentes": assistentes})
+        return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "data_solicitacoes": data_solicitacoes, "assistentes": assistentes})
 
 def novo_token(request):
     if not request.user.is_authenticated:
@@ -144,7 +167,7 @@ def novo_token(request):
             except Token.DoesNotExist:
                 logger.info(f"User {request.user.username} cadastrou um novo token: {nome_responsavel}, CPF: {cpf_responsavel}, Serial: {serial}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
                 token.save()
-            return render(request, 'lista_tokens.html', {'tokens': Token.objects.all(), "sucesso": "Token cadastrado com sucesso!", "usuario": request.user, "funcoes": funcoes, "assistentes": assistentes})
+            return render(request, 'lista_tokens.html', {'tokens': Token.objects.all(), "sucesso": "Token cadastrado com sucesso!", "usuario": request.user, "funcoes": funcoes, "assistentes": assistentes, "data_entregas": data_entregas, "data_solicitacoes": data_solicitacoes})
         logger.info(f"User {request.user.username} acessou a página de cadastro de novo token. {time.strftime('%Y-%m-%d %H:%M:%S')}")
         return render(request, 'novo_token.html', {"funcoes": funcoes, "usuario": request.user})
 
@@ -156,6 +179,7 @@ def atualizar_token(request, token_id):
         token = Token.objects.get(id=token_id)
         try: 
             token.data_entrega = token.data_entrega.strftime("20%y-%m-%d")
+            token.data_solicitacao = token.data_solicitacao.strftime("20%y-%m-%d")
         except:
             pass
         # print(token.data_entrega.strftime("%d/%m/20%y"))
@@ -181,8 +205,8 @@ def atualizar_token(request, token_id):
             token.token_entregue = (request.POST.get('token_entregue') == 'on')
             logger.info(f"User {request.user.username} atualizou o token: {token.nome_responsavel}, CPF: {token.cpf_responsavel}, Serial: {token.serial}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
             token.save()
-            return render(request, 'lista_tokens.html', {'tokens': Token.objects.all(), "sucesso": "Token atualizado com sucesso!", "usuario": request.user, "funcoes": funcoes, "assistentes": assistentes})
-        
+            return render(request, 'lista_tokens.html', {'tokens': Token.objects.all(), "sucesso": "Token atualizado com sucesso!", "usuario": request.user, "funcoes": funcoes, "assistentes": assistentes, "data_entregas": data_entregas, "data_solicitacoes": data_solicitacoes})
+        # print(token.data_solicitacao)
         return render(request, 'token.html', {'token': token, "funcoes": funcoes, "usuario": request.user, "assistentes": assistentes})
 
 def atualizar_lista(request):
@@ -279,7 +303,7 @@ def exportar_planilha(request):
         sheet.title = 'Tokens'
 
         # Cabeçalhos
-        headers = ['Nome', 'CPF', 'Função', 'Serial', 'Data de Solicitação', 'Data de Entrega', 'Observação', 'Criador']
+        headers = ['Nome', 'CPF', 'Função', 'Serial', 'Entregue', 'Data de Solicitação', 'Data de Entrega', 'Observação', 'Criador por', 'Ultima Modificação por']
         sheet.append(headers)
 
         # Dados dos tokens
@@ -289,10 +313,12 @@ def exportar_planilha(request):
                 token.cpf_responsavel,
                 token.funcao_responsavel,
                 token.serial,
+                'Sim' if token.token_entregue else 'Não',
                 token.data_solicitacao.strftime('%d/%m/%Y') if token.data_solicitacao else '',
                 token.data_entrega.strftime('%d/%m/%Y') if token.data_entrega else '',
                 token.observacao,
-                token.criador
+                token.criador,
+                token.modificador
             ]
             sheet.append(row)
 

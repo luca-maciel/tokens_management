@@ -59,7 +59,14 @@
                         </th>
                         <!-- <th>Setor</th> -->
                         <!-- <th>Telefone</th> -->
-                        <th>Data de solicitação</th>
+                        <th>Data de solicitação
+                            <select name="data_solicitacao" id="data_solicitacao" onchange="window.location.href='/lista_tokens_data_solicitacao/' + this.value">
+                                <option value="">Selecione</option>
+                                {% for data in data_solicitacoes %}
+                                    <option value="{{ data }}">{{ data }}</option>
+                                {% endfor %}
+                            </select>
+                        </th>
                         <th style="text-align: center;">Data de entrega
                             <select name="data_entrega" id="data_entrega" onchange="console.log(window.location.href='/lista_tokens_data_entrega/' + this.value)">
                                 <option value="">Selecione</option>
@@ -123,9 +130,9 @@
                                 {% if token.observacao|length > 30 %}
                                 <span id="obs" value="{{token.observacao}}" style="text-align: center;"></span>
                                 <!-- <button onclick="abrirObs()">Ver obs</button> -->
-                                <td onclick="abrirObs()">
+                                <td style="text-align: center;">
                                     <span class="text-truncate" style="max-width: 200px; display: inline-block; text-align:center;">{{ token.observacao|slice:":30" }}...</span>
-                                    <button class="btn btn-link" onclick="abrirObs()" style="padding: 0; text-decoration: underline; color: blue;">Ver mais</button>
+                                    <button class="btn btn-li   nk" onclick="abrirObs()" style="padding: 0; text-decoration: underline; color: blue;">Ver mais</button>
                                 </td>
                                 {% else %}
                                 <td style="text-align: center;">{{token.observacao}}</td>

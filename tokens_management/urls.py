@@ -10,6 +10,7 @@ urlpatterns = [
     path("lista_tokens/<str:funcao>/", views.lista_tokens_funcao, name="lista_tokens_funcao"),
     path("lista_tokens_assistente_modificador/<int:assistente_id>/", views.lista_tokens_assistente_modificador, name="lista_tokens_assistente_modificador"),
     path("lista_tokens_assistente_criador/<int:assistente_id>/", views.lista_tokens_assistente_criador, name="lista_tokens_assistente_criador"),
+    path("lista_tokens_data_solicitacao/<str:data_solicitacao>/", views.lista_tokens_data_solicitacao, name="lista_tokens_data_solicitacao"),
     path("lista_tokens_data_entrega/<str:data_entrega>/", views.lista_tokens_data_entrega, name="lista_tokens_data_entrega"),
     path("lista_tokens_entregue/<str:entregue>/", views.lista_tokens_entregue, name="lista_tokens_entregue"),
     path("novos_tokens/", views.atualizar_lista, name="atualizar_lista"),
