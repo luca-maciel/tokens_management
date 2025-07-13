@@ -90,6 +90,23 @@ def lista_tokens_data_entrega(request, data_entrega):
         except Exception as e:
             return HttpResponse(f"Erro ao filtrar tokens por data de entrega: {str(e)}")
 
+def lista_tokens_entregue(request, entregue):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    else:
+        if entregue == "True":
+            tokens = Token.objects.filter(token_entregue=True).order_by('nome_responsavel')
+        elif entregue == "False":
+            tokens = Token.objects.filter(token_entregue=False).order_by('nome_responsavel')
+        else:
+            return HttpResponse("Valor inválido para 'entregue'. Use 'True' ou 'False'.")
+        
+        if not tokens:
+            return HttpResponse("Nenhum token encontrado com o status de entrega especificado.")
+        
+        logger.info(f"User {request.user.username} Acessou a lista de tokens entregues: {entregue}. {time.strftime('%Y-%m-%d %H:%M:%S')}")
+        return render(request, 'lista_tokens.html', {'tokens': tokens, "usuario": request.user, "funcoes": funcoes, "data_entregas": data_entregas, "assistentes": assistentes})
+
 def novo_token(request):
     if not request.user.is_authenticated:
         return redirect('login')

@@ -11,6 +11,7 @@ urlpatterns = [
     path("lista_tokens_assistente_modificador/<int:assistente_id>/", views.lista_tokens_assistente_modificador, name="lista_tokens_assistente_modificador"),
     path("lista_tokens_assistente_criador/<int:assistente_id>/", views.lista_tokens_assistente_criador, name="lista_tokens_assistente_criador"),
     path("lista_tokens_data_entrega/<str:data_entrega>/", views.lista_tokens_data_entrega, name="lista_tokens_data_entrega"),
+    path("lista_tokens_entregue/<str:entregue>/", views.lista_tokens_entregue, name="lista_tokens_entregue"),
     path("novos_tokens/", views.atualizar_lista, name="atualizar_lista"),
     path("atualizar_token/<int:token_id>/", views.atualizar_token, name="atualizar_token"),
     path("novo_token/", views.novo_token, name="novo_token"),
